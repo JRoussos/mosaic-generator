@@ -1,0 +1,18 @@
+input {
+    position: absolute;
+    
+    display: block;
+
+    min-width: inherit;
+    min-height: inherit;
+
+    border: none;
+    border-radius: 8px;
+
+    text-transform: none;
+    width: inherit;
+    height: inherit;
+
+    cursor: pointer;
+    opacity:0;
+}

@@ -1,38 +1,112 @@
-.App {
-  text-align: center;
+.overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 100;
+  background: black;
 }
 
-.App-logo {
-  height: 40vmin;
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+
+  height: 100vh;
+  width: 100vw;
+}
+
+button {
+  position: absolute;
+  right: 0;
+  z-index: 30;
+
+  padding: 10px;
+
+  background: none;
+  border: none;
+
+  cursor: pointer;
+}
+
+.mosaic {
+  position: relative;
+
+  width: 30vw;
+  height: 30vw;
+
+  min-width: 340px;
+  min-height: 340px;
+
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mosaic img {
+  position: absolute;
+  z-index: 10;
+
+  width: inherit;
+  min-width: inherit;
+  border-radius: inherit;
+}
+
+.mosaic .image-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   pointer-events: none;
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: inherit;
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  overflow: hidden;
+  z-index: 2;
+
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.mosaic .image-overlay svg {
+  margin: 20px;
+}
+.mosaic .image-overlay p {
+  margin: 1px 0;
+
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.2);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.mosaic .image-overlay p span{
+  color: rgba(255, 255, 255, 0.3);
+  text-decoration: underline;
+
+  pointer-events: all;
+  cursor: pointer;
+
+  transition: color 0.2s ease-in;
+}
+
+.mosaic .image-overlay p span:hover {
+  color: rgba(255, 255, 255, 0.8); 
+}
+
+.bits {
+  display: grid;
+  grid-gap: 0;
+
+  position: absolute;
+  z-index: 20;
+
+  border-radius: inherit;
+}
+
+.bits div {
+  width: 5px;
+  height: 5px;
 }
