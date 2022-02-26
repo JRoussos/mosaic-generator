@@ -1,16 +1,21 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import './file_upload_styles.css'
 
-const DEFAULT_MAX_FILE_SIZE_IN_BYTES = 500000;
+const DEFAULT_MAX_FILE_SIZE_IN_BYTES = 2000000;
 
 const FileUpload = ({label, handler, ...props}) => {
+    const [error, setError] = useState(false)
     const fileInputRef = useRef()
 
     const addNewFiles = (fileList) => {
         const file = fileList[0]
         let isImageFile = file.type.split("/")[0] === "image";
         if (file.size <= DEFAULT_MAX_FILE_SIZE_IN_BYTES && isImageFile) {
+            setError(false)
             handler(file)
+        }else{
+            setError(true)
+            console.log("File is too big ")
         }
     }
 
@@ -20,7 +25,10 @@ const FileUpload = ({label, handler, ...props}) => {
     }
 
     return (
-        <input type='file' ref={fileInputRef} onChange={handleOnFileChange} title='' value='' {...props}/>
+        <React.Fragment>
+            <input type='file' ref={fileInputRef} onChange={handleOnFileChange} title='' value='' {...props}/>
+            {error && <p className='error'>You should upload an image with a max size of 2 MB, try a smaller image or use the demo one</p>}
+        </React.Fragment>
     )
 }
 

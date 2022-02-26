@@ -1,18 +1,32 @@
-input {
+input[type="file"] {
     position: absolute;
     
     display: block;
-
-    min-width: inherit;
-    min-height: inherit;
 
     border: none;
     border-radius: 8px;
 
     text-transform: none;
+
     width: inherit;
     height: inherit;
 
+    min-width: inherit;
+    min-height: inherit;
+
+    max-width: inherit;
+    max-height: inherit;
+
     cursor: pointer;
     opacity:0;
+}
+
+.error {
+    position: absolute;
+    bottom: 20px;
+    margin: 20px;
+    
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 14px;
+    text-align: center;
 }

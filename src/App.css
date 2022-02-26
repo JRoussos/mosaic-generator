@@ -22,7 +22,8 @@ button {
   right: 0;
   z-index: 30;
 
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
 
   background: none;
   border: none;
@@ -39,6 +40,9 @@ button {
   min-width: 340px;
   min-height: 340px;
 
+  max-width: 500px;
+  max-height: 500px;
+
   border-radius: 6px;
   overflow: hidden;
 }
@@ -48,8 +52,16 @@ button {
   z-index: 10;
 
   width: inherit;
+  height: inherit;
+
   min-width: inherit;
+  min-height: inherit;
+  
+  max-width: inherit;
+  max-height: inherit;
+
   border-radius: inherit;
+  object-fit: cover;
 }
 
 .mosaic .image-overlay {
@@ -75,6 +87,7 @@ button {
 .mosaic .image-overlay svg {
   margin: 20px;
 }
+
 .mosaic .image-overlay p {
   margin: 1px 0;
 
@@ -103,10 +116,24 @@ button {
   position: absolute;
   z-index: 20;
 
+  width: inherit;
+  height: inherit;
+
+  min-width: inherit;
+  min-height: inherit;
+  
+  max-width: inherit;
+  max-height: inherit;
+
   border-radius: inherit;
+  pointer-events: none;
+}
+
+.hidden {
+  opacity: 0;
 }
 
 .bits div {
-  width: 5px;
-  height: 5px;
+  /* width: 5px;
+  height: 5px; */
 }
