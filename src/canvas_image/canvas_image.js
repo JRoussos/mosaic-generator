@@ -1,7 +1,7 @@
-import React, { useRef, useMemo } from 'react'
+import React, { useRef, useMemo, useLayoutEffect } from 'react'
 // import { gsap } from 'gsap'
 
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { Vector2 } from 'three'
 
@@ -9,6 +9,7 @@ import { vertex, fragment } from './shaders';
 
 const DataImage = ({ data, pixels, width }) => {
     const instanceMeshRef = useRef() 
+    const { camera } = useThree()
 
     const { sIndices, sPositions, sColor } = useMemo(() => {
 		const sIndices = new Uint16Array(pixels)
@@ -18,8 +19,8 @@ const DataImage = ({ data, pixels, width }) => {
 		for (let i = 0; i < pixels; i++) {
 			sIndices[i] = i
 
-			sPositions[i*3+0] = 0.5 + (i % width)
-			sPositions[i*3+1] = (width - 0.5) - Math.floor(i / width)
+			sPositions[i*3+0] = (0.5 + (i % width)) - width/2
+			sPositions[i*3+1] = ((width - 0.5) - Math.floor(i / width)) - width/2
 
             sColor[i*3+0] = data[i][0] / 255
             sColor[i*3+1] = data[i][1] / 255
@@ -29,9 +30,14 @@ const DataImage = ({ data, pixels, width }) => {
 		return { sIndices, sPositions, sColor }
 	}, [data, pixels, width])
 
-    useFrame( ({clock}) => {
+    useFrame(( {clock} ) => {
 		instanceMeshRef.current.material.uniforms.uTime.value = clock.elapsedTime
 	})
+
+    useLayoutEffect(() => {
+        camera.fov = Math.atan((width/2)/100) * 2 * (180/Math.PI)
+        camera.updateProjectionMatrix()
+    }, [camera, width])
 
     // setTimeout(() => {
     //     gsap.to(instanceMeshRef.current.material.uniforms.uSize, { duration: 1, value: 1.0, ease: 'power3.out'})
@@ -56,11 +62,11 @@ const DataImage = ({ data, pixels, width }) => {
 }
 
 const CanvasImage = React.forwardRef(({ data }, ref) => {
-    const pixels = data.length
+    const pixels = data.length 
     const width = Math.sqrt(pixels)
 
     const cameraProps = {
-		fov: Math.atan((width/2)/100) * 2 * (180/Math.PI), //24, 
+		fov: Math.atan((width/2)/100) * 2 * (180/Math.PI),
 		near: 1,
 		far: 2000,
 		position: [0, 0, 100]
@@ -73,7 +79,7 @@ const CanvasImage = React.forwardRef(({ data }, ref) => {
         background: 'rgba(0, 0, 0, 0.25)'
     } 
 
-    return data.length > 0 ? (
+    return width > 0 ? (
         <Canvas ref={ref} dpr={[window.devicePixelRatio, 2]} camera={cameraProps} style={canvasStyle}>
             <DataImage data={data} pixels={pixels} width={width}/>
             <OrbitControls enablePan={true} enableZoom={true} enableRotate={false} />

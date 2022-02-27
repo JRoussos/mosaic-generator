@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import FileUpload from './file_upload/fileUpload';
 import RangeSlider from './range_slider/RangeSlider';
@@ -10,9 +10,9 @@ import './App.css';
 import Toolbar from './toolbar/toolbar';
 
 const App = () => {
-  const [done, updateStatus] = useState([])
-  const [file, updateFile] = useState('')
+  const [data, updateData] = useState([])
   const [scaleValue, upadateValue] = useState(4)
+  const [file, updateFile] = useState(null)
 
   const imageRef = useRef(null)
   const bitsRef  = useRef(null)
@@ -46,6 +46,11 @@ const App = () => {
     canvas.width =  imageSize
     canvas.height = imageSize
 
+    /**
+     *  - landscape or portrait pictures dont scale correctly
+     *  - scale that are not dividable by the canvas size have wrong average values
+     */
+
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
     const colors = []
@@ -76,9 +81,7 @@ const App = () => {
 
   const handleLoaded = () => {
     const data = getImageData(imageRef.current, scaleValue)
-    imageRef.current && updateStatus(data)
-  
-    // getImageFromServer(data)
+    imageRef.current && updateData(data)
   }
 
   const handleFiles = file => {
@@ -88,7 +91,7 @@ const App = () => {
 
   const handleClear = () => {
     updateFile(null)
-    updateStatus([])
+    updateData([])
   }
 
   const handleTouchStart = (e) => {
@@ -111,11 +114,15 @@ const App = () => {
     console.log('handleProcessImage');
   }
 
+  useEffect(() => {
+    imageRef.current && handleLoaded()
+  }, [imageRef, scaleValue])
+
   return ( 
     <div className="app">
       <div className='mosaic' onPointerDown={handleTouchStart} onPointerUp={handleTouchEnd} onPointerMove={() => clearTimeout(timer)}>
-        <Toolbar file={file} data={done} handleClear={handleClear} handleProcessImage={handleProcessImage}/>
-        <CanvasImage ref={bitsRef} data={done}/>
+        <Toolbar file={file} data={data} handleClear={handleClear} handleProcessImage={handleProcessImage}/>
+        <CanvasImage ref={bitsRef} data={data}/>
         {file && <img ref={imageRef} src={file} alt='mosaic' onLoad={handleLoaded}/>}
         <div className='image-overlay'>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" role="img">

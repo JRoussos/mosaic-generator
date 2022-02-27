@@ -7,18 +7,6 @@ varying vec2 vPUv;
 varying vec4 rgba;
 
 void main() {
-    // vec2 uv = vUv;
-    // vec2 puv = vPUv;
-
-    // vec4 text = texture2D(uTexture, puv);
-
-    // float threashold = 0.5;
-    // if ( text.r + text.g + text.b <= threashold ) discard;
-
-	// float border = 0.3;
-	// float radius = 0.5;
-	// float dist = radius - distance(uv, vec2(0.5));
-	// float t = smoothstep(0.0, border, dist);
 
     gl_FragColor = rgba;
 }`
@@ -80,7 +68,7 @@ void main() {
     vPUv = puv;
     
     vec3 displaced = offset;
-	displaced.xy -= uTextureSize * 0.5; // move every vertex half a screen to the left in order to center them
+	// displaced.xy -= uTextureSize * 0.5; // move every vertex half a screen to the left in order to center them
 
     float psize = uSize * snoise(vec2(uTime * 0.2, index)) * 0.5;
     psize = min(psize, 1.0);
