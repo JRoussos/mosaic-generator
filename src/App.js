@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 
 import FileUpload from './file_upload/fileUpload';
 import RangeSlider from './range_slider/RangeSlider';
+import CanvasImage from './canvas_image/canvas_image';
 
 import image from './assets/img/photo303.jpg';
 
@@ -41,6 +42,7 @@ const App = () => {
   
     canvas.width =  imageSize
     canvas.height = imageSize
+
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
     const colors = []
@@ -87,11 +89,11 @@ const App = () => {
   }
 
   const handleTouchStart = () => {
-    file && bitsRef.current.classList.add('hidden')
+    file && bitsRef.current?.classList.add('hidden')
   }
 
   const handleTouchEnd = () => {
-    file && bitsRef.current.classList.remove('hidden')
+    file && bitsRef.current?.classList.remove('hidden')
   }
 
   return ( 
@@ -99,14 +101,10 @@ const App = () => {
       <div className='mosaic' onMouseDown={handleTouchStart} onMouseUp={handleTouchEnd}>
         {file && <button onClick={handleClear}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" role="img">
-            <path style={{filer: "invert(1)"}} d="M12.2049 13.692C12.6156 14.1027 13.2814 14.1027 13.692 13.692C14.1027 13.2814 14.1027 12.6156 13.692 12.2049L8.48711 7L13.692 1.7951C14.1027 1.38445 14.1027 0.718646 13.692 0.307991C13.2814 -0.102663 12.6156 -0.102663 12.2049 0.307991L7 5.51289L1.7951 0.307991C1.38445 -0.102663 0.718646 -0.102664 0.307991 0.307991C-0.102663 0.718646 -0.102663 1.38445 0.307991 1.7951L5.51289 7L0.307991 12.2049C-0.102664 12.6156 -0.102663 13.2814 0.307991 13.692C0.718646 14.1027 1.38445 14.1027 1.7951 13.692L7 8.48711L12.2049 13.692Z" fill="white" fillOpacity='0.8'/>
+            <path d="M12.2049 13.692C12.6156 14.1027 13.2814 14.1027 13.692 13.692C14.1027 13.2814 14.1027 12.6156 13.692 12.2049L8.48711 7L13.692 1.7951C14.1027 1.38445 14.1027 0.718646 13.692 0.307991C13.2814 -0.102663 12.6156 -0.102663 12.2049 0.307991L7 5.51289L1.7951 0.307991C1.38445 -0.102663 0.718646 -0.102664 0.307991 0.307991C-0.102663 0.718646 -0.102663 1.38445 0.307991 1.7951L5.51289 7L0.307991 12.2049C-0.102664 12.6156 -0.102663 13.2814 0.307991 13.692C0.718646 14.1027 1.38445 14.1027 1.7951 13.692L7 8.48711L12.2049 13.692Z" fill="white" fillOpacity='0.8'/>
           </svg>
         </button>}
-        <div ref={bitsRef} className='bits' style={{gridTemplateColumns: `repeat(${Math.sqrt(done.length)}, 1fr)`}}>
-          {done.length > 0 && done.map( (color, index) => (
-            <div key={index} className='box' style={{backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`}}></div>
-          ))}
-        </div>
+        {done.length > 0 && <CanvasImage ref={bitsRef} data={done}/>}
         {file && <img ref={imageRef} src={file} alt='mosaic' onLoad={handleLoaded}/>}
         <div className='image-overlay'>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" role="img">

@@ -69,6 +69,7 @@ button {
   inset: 0;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -79,9 +80,6 @@ button {
 
   overflow: hidden;
   z-index: 2;
-
-  display: flex;
-  flex-direction: column;
 }
 
 .mosaic .image-overlay svg {
@@ -131,9 +129,4 @@ button {
 
 .hidden {
   opacity: 0;
-}
-
-.bits div {
-  /* width: 5px;
-  height: 5px; */
 }

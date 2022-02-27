@@ -29,6 +29,7 @@
 
 .slider .values {
     display: flex;
+    margin: 0 -5px;
     justify-content: space-between;
 }
 
@@ -49,10 +50,11 @@
 
 .desc {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     
     width: 100%;
+    max-width: 500px;
     margin-top: 30px;
     
     display: flex;
@@ -63,7 +65,7 @@
 
 .desc p {
     color: rgba(255, 255, 255, 0.2);
-    margin: 0 2px;
+    margin: 0 10px;
 
     /* white-space: nowrap; */
     text-align: center;

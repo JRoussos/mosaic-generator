@@ -25,7 +25,6 @@ yarn-error.log*
 # project
 src/assets/p_images/
 src/colorFunctions.js
-src/canvas_image
 
 # server
 server/assets/photos/
