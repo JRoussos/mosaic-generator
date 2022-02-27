@@ -17,20 +17,6 @@
   width: 100vw;
 }
 
-button {
-  position: absolute;
-  right: 0;
-  z-index: 30;
-
-  margin: 5px;
-  padding: 5px;
-
-  background: none;
-  border: none;
-
-  cursor: pointer;
-}
-
 .mosaic {
   position: relative;
 
@@ -45,6 +31,8 @@ button {
 
   border-radius: 6px;
   overflow: hidden;
+
+  user-select: none;
 }
 
 .mosaic img {
@@ -125,6 +113,11 @@ button {
 
   border-radius: inherit;
   pointer-events: none;
+}
+
+canvas {
+  touch-action: none; 
+  transition: opacity 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
 .hidden {

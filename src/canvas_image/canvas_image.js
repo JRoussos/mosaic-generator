@@ -1,5 +1,5 @@
 import React, { useRef, useMemo } from 'react'
-import { gsap } from 'gsap'
+// import { gsap } from 'gsap'
 
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
@@ -33,9 +33,9 @@ const DataImage = ({ data, pixels, width }) => {
 		instanceMeshRef.current.material.uniforms.uTime.value = clock.elapsedTime
 	})
 
-    setTimeout(() => {
-        gsap.to(instanceMeshRef.current.material.uniforms.uSize, { duration: 1, value: 1.0, ease: 'power3.out'})
-    }, 2000);
+    // setTimeout(() => {
+    //     gsap.to(instanceMeshRef.current.material.uniforms.uSize, { duration: 1, value: 1.0, ease: 'power3.out'})
+    // }, 2000);
 
     const uniforms = useMemo(() => ({
 		uSize: { value: 0.0 },
@@ -69,15 +69,16 @@ const CanvasImage = React.forwardRef(({ data }, ref) => {
     const canvasStyle = {
         position: 'absolute',
         zIndex: 20,
-        background: 'rgba(17, 17, 17, 0.35)'
+        cursor: 'pointer',
+        background: 'rgba(0, 0, 0, 0.25)'
     } 
 
-    return (
+    return data.length > 0 ? (
         <Canvas ref={ref} dpr={[window.devicePixelRatio, 2]} camera={cameraProps} style={canvasStyle}>
             <DataImage data={data} pixels={pixels} width={width}/>
             <OrbitControls enablePan={true} enableZoom={true} enableRotate={false} />
         </Canvas>
-    )
+    ) : null
 })
 
 export default CanvasImage

@@ -1,0 +1,63 @@
+.toolbar-container {
+    position: absolute;
+    right: 0;
+    
+    z-index: 30;
+}
+
+.toolbar {
+    height: 30px;
+    margin: 5px;
+
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 7px;
+}
+
+button {
+    width: 30px;
+    height: 30px;
+
+    border-radius: 7px;
+    border: none;
+  
+    cursor: pointer;
+    transition: transform 0.1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+button:active {
+    transform: scale(0.9);
+}
+
+button:disabled {
+    filter: grayscale(1);
+}
+
+#clear {
+    background: url('../assets/svg/clear.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#mosaic {
+    background: url('../assets/svg/mosaic.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#mosaic:not(:disabled) {
+    animation: shake 2.5s cubic-bezier(.36,.07,.19,.97);
+    animation-iteration-count: infinite;
+}
+/* 
+#mosaic:hover {
+    animation: shake 3s cubic-bezier(.36,.07,.19,.97);
+} */
+
+@keyframes shake {
+    8% {transform: rotate(0deg);}
+    16% {transform: rotate(-5deg) scale(1.11);}
+    24% {transform: rotate(5deg);}
+    32% {transform: rotate(-4deg);}
+    40% {transform: rotate(5deg) scale(1);}
+    48% {transform: rotate(0deg);} 
+}
