@@ -50,6 +50,7 @@
 
   border-radius: inherit;
   object-fit: cover;
+  object-position: top left;
 }
 
 .mosaic .image-overlay {

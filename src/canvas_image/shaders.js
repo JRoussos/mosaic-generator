@@ -8,7 +8,7 @@ varying vec4 rgba;
 
 void main() {
 
-    gl_FragColor = rgba;
+  gl_FragColor = rgba;
 }`
 
 const vertex = /* GLSL */ `
@@ -62,22 +62,41 @@ float random(float n) {
 	return fract(sin(n) * 43758.5453123);
 }
 
+// https://github.com/mattdesl/glsl-random/blob/master/lowp.glsl
+highp float random2D(vec2 co) {
+  return fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+// https://github.com/mattatz/ShibuyaCrowd/blob/master/source/shaders/common/quaternion.glsl
+vec3 random_point_on_plane(vec2 uv) {
+  float u = random2D(uv) * 2.0 - 1.0;
+  float theta = random2D(uv + 0.333) * PI * 2.0;
+  float u2 = sqrt(1.0 - u * u);
+  return vec3(u2 * cos(theta), u2 * sin(theta), u);
+}
+
 void main() {
     vec2 puv = (offset.xy / uTextureSize); // calculating how the texture should be applied onto each particle
-	vUv = uv; // the uv coordinates  of the particle
+	  vUv = uv; // the uv coordinates  of the particle
     vPUv = puv;
     
     vec3 displaced = offset;
-	// displaced.xy -= uTextureSize * 0.5; // move every vertex half a screen to the left in order to center them
+    displaced.xy -= uTextureSize * 0.5;
 
-    float psize = uSize * snoise(vec2(uTime * 0.2, index)) * 0.5;
-    psize = min(psize, 1.0);
+    // float rndz = random(index) + snoise(vec2(index * 0.1, uTime * 0.1));
+    // displaced.z += uSize * (random(index) * 2.0 * (sin(index) + 5.0));
+    // displaced.xy += psize * vec2(random(index) - 0.5, random(offset.x + index) - 0.5);
 
-    rgba = vec4(color, 1.0 + psize);
+    float psize = sqrt(snoise(vec2(uTime * 0.5, index)) * (log(uTextureSize.x) * 1.2) );
+    psize = max(psize * uSize, 0.0);
+
+    displaced += random_point_on_plane(puv) * psize; 
+
+    rgba = vec4(color, 1.0);
 
     vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
-	mvPosition.xyz += position;
-	vec4 finalPosition = projectionMatrix * mvPosition;
+	  mvPosition.xyz += position;
+	  vec4 finalPosition = projectionMatrix * mvPosition;
 
     gl_Position = finalPosition;
 }`
