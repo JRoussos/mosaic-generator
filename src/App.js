@@ -14,7 +14,8 @@ const App = () => {
   const [file, updateFile] = useState(null)
   const [map, updateMap] = useState(null)
 
-  const [processing, setProcessing] = useState(false)
+  const [processing, updateProcessing] = useState(false)
+  const [logMsg, updateLogMsg] = useState(null)
 
   const imageRef = useRef(null)
   const imageSize = 240
@@ -36,7 +37,10 @@ const App = () => {
       const get_request = await fetch(`${url}?id=${id}`)
         .then(res => res.blob())
         .then(blob => URL.createObjectURL(blob))
-        .then(src => updateMap(src))
+        .then(src => {
+          updateMap(src)
+          updateProcessing(false)
+        })
       
       console.log("done: ", map)
 
@@ -45,6 +49,8 @@ const App = () => {
       }).then(res => console.log('deleted:', res))
 
     } catch (error) {
+      updateProcessing(false)
+      updateLogMsg('An error occurred while trying talking to server.')
       console.log(error)
     }
 
@@ -102,16 +108,21 @@ const App = () => {
   }
 
   const handleClear = () => {
+    navigator.vibrate(5)
+
     updateFile(null)
     updateMap(null)
+    updateProcessing(false)
     updateData([])
   }
 
   const handleProcessImage = () => {
     console.log('handleProcessImage');
+    navigator.vibrate(5)
     
-    // getImageFromServer('http://192.168.1.20:8000/image', data)
-    setProcessing(!processing)
+    updateLogMsg(null)
+    updateProcessing(!processing)
+    getImageFromServer('http://192.168.1.20:8000/image', data)
   }
 
   useEffect(() => {
@@ -121,13 +132,13 @@ const App = () => {
   return ( 
     <div className="app">
       <div className='mosaic'>
-        <Toolbar file={file} data={data} handleClear={handleClear} handleProcessImage={handleProcessImage}/>
+        <Toolbar file={file} processing={processing} logMsg={logMsg} handleClear={handleClear} handleProcessImage={handleProcessImage}/>
         <CanvasImage data={data} map={map} processing={processing}/>
-        {file && <img ref={imageRef} src={file} alt='mosaic' onLoad={handleLoaded}/>}
+        {file && <img ref={imageRef} src={file} alt='uploaded file' onLoad={handleLoaded}/>}
         <ImageOverlay updateFile={updateFile}/>
         <FileUpload accept=".jpg,.png,.jpeg" handler={handleFiles} />
       </div>
-      <RangeSlider scaleValue={scaleValue} upadateValue={upadateValue}/>
+      <RangeSlider scaleValue={scaleValue} processing={processing} upadateValue={upadateValue}/>
     </div>
   );
 }

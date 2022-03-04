@@ -13,6 +13,7 @@
     background: rgba(255, 255, 255, 0.2);
 
     border-radius: 2px;
+    transition: background 0.1s ease-in;
 }
 
 .slider input[type='range']::-webkit-slider-thumb {
@@ -25,6 +26,16 @@
     background: rgb(179, 179, 179);
     
     cursor: pointer;
+    transition: background 0.1s ease-in;
+}
+
+.slider input[type='range']:disabled {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.slider input[type='range']:disabled::-webkit-slider-thumb {
+    background: rgb(41, 41, 41);
+    cursor: unset;
 }
 
 .slider .values {

@@ -41,8 +41,8 @@ const DataImage = ({ data, pixels, width, processing }) => {
 
     useEffect(() => {
         processing ? 
-            gsap.to(instanceMeshRef.current.material.uniforms.uSize, {duration: 0.85, value: 1.0, ease: 'back.out(2)'}) :
-            gsap.to(instanceMeshRef.current.material.uniforms.uSize, {duration: 0.85, value: 0.0, ease: 'back.out(2)'})
+            gsap.to(instanceMeshRef.current.material.uniforms.uSize, {duration: 1, value: 1.0, ease: 'elastic.out(1, 0.8)'}) :
+            gsap.to(instanceMeshRef.current.material.uniforms.uSize, {duration: 1, value: 0.0, ease: 'elastic.in(1, 0.8)'})
     }, [processing])
 
     const uniforms = useMemo(() => ({

@@ -20,7 +20,10 @@ const CanvasImage = ({ data, map, processing }) => {
         if (pointerList.length >= 1) return
         pointerList.push(e.pointerId)
         
-        timer = setTimeout(() => canvasRef.current?.classList.add('hidden'), 200)
+        timer = setTimeout(() => {
+            navigator.vibrate(5)
+            canvasRef.current?.classList.add('hidden')
+        }, 200)
     }
 
     const handleTouchEnd = () => {
@@ -54,7 +57,7 @@ const CanvasImage = ({ data, map, processing }) => {
                         <DataImage data={data} pixels={pixels} width={width} processing={processing}/> :
                         <ServerImage map={map}/> }
                 </Suspense>
-                <OrbitControls ref={orbitRef} enablePan={true} enableZoom={true} enableRotate={false} enableDamping={false} maxDistance={100}/>
+                <OrbitControls ref={orbitRef} enablePan={!processing} enableZoom={!processing} enableRotate={false} enableDamping={false} maxDistance={100}/>
             </Canvas>
         </div>
     ) : null
