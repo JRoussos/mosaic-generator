@@ -112,12 +112,15 @@ const getRandom = (max) => {
     return Math.floor(Math.pow(Math.random(), 2) * max) 
 }
 
-const createImage = (jsonLength, similarArray) => {
+const createImage = (reseivedColorValuesLength, sortedDistances) => {
+    const THUMBNAIL_IMAGE_SIZE = 50
     const DUPLICATE_DEPTH_CHECK = 2
-    const OG_IMAGE_SIZE = Math.sqrt(jsonLength)
-    const NEW_IMAGE_SIZE = IMAGE_SIZE * OG_IMAGE_SIZE
     
-    const emptyNewImage = new Jimp(NEW_IMAGE_SIZE, NEW_IMAGE_SIZE)
+    const THRESHOLD = 10
+    const OG_IMAGE_SIZE = Math.sqrt(reseivedColorValuesLength)
+    const FINAL_IMAGE_SIZE = THUMBNAIL_IMAGE_SIZE * OG_IMAGE_SIZE
+    
+    const emptyNewImage = new Jimp(FINAL_IMAGE_SIZE, FINAL_IMAGE_SIZE)
     let index = 0
 
     const matrix = [[]]
@@ -126,10 +129,10 @@ const createImage = (jsonLength, similarArray) => {
         const row = []
 
         for(let k = 0; k < OG_IMAGE_SIZE; k++) {
-            let x = k * IMAGE_SIZE
-            let y = i * IMAGE_SIZE
+            let x = k * THUMBNAIL_IMAGE_SIZE
+            let y = i * THUMBNAIL_IMAGE_SIZE
 
-            const imagesSimilarWithThisPixel = similarArray[index++] // array of similar images
+            const imagesSimilarWithThisPixel = sortedDistances[index++] // array of similar images
             const lengthOfSimilars = imagesSimilarWithThisPixel.length // the length of it
 
             let at = getRandom(lengthOfSimilars) 
@@ -145,7 +148,7 @@ const createImage = (jsonLength, similarArray) => {
                 let counter = 0 
                 while(looping && (row[k - d] === imagesSimilarWithThisPixel[at].count || matrix[i - d]?.[k] === imagesSimilarWithThisPixel[at].count) && at < lengthOfSimilars){
                     let c = getRandom(lengthOfSimilars) 
-                    console.log('trying...', at, '->', c, 'length: ', lengthOfSimilars, 'index: ', k);
+                    console.log('\x1b[35m%s\x1b[0m', 'trying...', at, '->', c, 'length: ', lengthOfSimilars, 'index: ', k);
                     if(counter >= lengthOfSimilars){
                         at = 0
                         looping = false
@@ -196,8 +199,20 @@ router.post('/', (req, res) => {
     const createdImage = createImage(rgbValues.length, similarArray)
     console.log('Image was created, sending now...');
 
-    res.send({ success: "ok", id: createdImage });
+    res.send({ success: true, id: createdImage });
     console.log('DONE: ', createdImage);
+})
+
+router.delete('/', (req, res) => {
+    const id = req.query.id
+    const fileName = `${id}.jpg`
+
+    const pathToFile = path.join(process.cwd(), 'out', fileName)
+
+    fs.unlink(pathToFile, (err) => {
+        if (err) res.send({ success: false, error: err })
+        else res.send({ success: true, id: id})
+    })
 })
 
 module.exports = router
