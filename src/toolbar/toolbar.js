@@ -1,26 +1,31 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef } from 'react'
 
 import './toolbar_styles.css'
 
-const Toolbar = ({file, processing, logMsg, handleClear, handleProcessImage}) => {
+const Toolbar = ({file, map, processing, logMsg, handleClear, handleProcessImage}) => {
     const msgRef = useRef(null)
-    const [index, updateIndex] = useState(0)
+    const handleDownload = () => {
+        navigator.vibrate(5)
 
-    const messages = [
-        'Waking up the server..',
-        'Finding the best images to match..',
-        'We are almost done..',
-        'Stitching up the final image..'
-    ]
+        const download_anchor = document.createElement('a')
+        download_anchor.href = map
+        download_anchor.setAttribute('download', 'mosaic.jpg')
+
+        document.body.appendChild(download_anchor)
+        download_anchor.click()
+        document.body.removeChild(download_anchor)
+    }
 
     return file ? (
         <div className='toolbar-container'>
             <div className='toolbar'>
-                <button id='mosaic' onClick={handleProcessImage} disabled={processing}/>
+                {map ? 
+                    <button id='download' onClick={handleDownload} disabled={!map}/> :
+                    <button id='mosaic' onClick={handleProcessImage} disabled={processing}/> }
                 <button id='clear' onClick={handleClear}/>
             </div>
-            {(processing || logMsg) && <div className='info-messages fade-in'>
-                <p ref={msgRef}>{logMsg || messages[index]}</p>
+            {(processing || logMsg.msg) && <div className='info-messages fade-in'>
+                <p ref={msgRef} className={logMsg.loading_dots ? 'loading-anim' : null}>{logMsg.msg || 'Waking up the server'}</p>
             </div>}
         </div>
   ) : null

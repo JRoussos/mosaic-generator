@@ -1,12 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
+import { io } from 'socket.io-client';
 
+import Toolbar from './toolbar/toolbar';
+import CanvasImage from './canvas_image/canvas_image';
+import FileInputOverlay from './file_input_overlay/file_input_overlay';
 import FileUpload from './file_upload/fileUpload';
 import RangeSlider from './range_slider/RangeSlider';
-import CanvasImage from './canvas_image/canvas_image';
-import ImageOverlay from './image_overlay/image_overlay';
 
 import './App.css';
-import Toolbar from './toolbar/toolbar';
 
 const App = () => {
   const [data, updateData] = useState([])
@@ -15,45 +16,46 @@ const App = () => {
   const [map, updateMap] = useState(null)
 
   const [processing, updateProcessing] = useState(false)
-  const [logMsg, updateLogMsg] = useState(null)
+  const [logMsg, updateLogMsg] = useState({loading_dots: true, msg: null})
 
   const imageRef = useRef(null)
   const imageSize = 240
 
-  const getImageFromServer = async (url = '', data = {}) => {
-    console.log('Sending data to server.. ', url)
+  const getFromWebSocket = (url = '', data = {}) => {
+    console.log('trying to connect..', url)
+    const socket = io(url)
 
-    try {
-      const post_request = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(res => res.json())
+    socket.on("connect", () => {
+      console.log("connected:", socket.id)
+      updateLogMsg({loading_dots: true, msg: 'Finding the best images to match'})
+      socket.emit('data', data)
+    })
+
+    socket.on("image_id", id => socket.emit('image', id))
+
+    socket.on("image_buffer", image => {
+      const {buffer, id} = image 
+      const file = URL.createObjectURL(new Blob([buffer], { type: 'image/jpeg'}))
       
-      const { id } = post_request
-      const get_request = await fetch(`${url}?id=${id}`)
-        .then(res => res.blob())
-        .then(blob => URL.createObjectURL(blob))
-        .then(src => {
-          updateMap(src)
-          updateProcessing(false)
-        })
-      
-      console.log("done: ", map)
-
-      const delete_request = await fetch(`${url}?id=${id}`, {
-        method: 'DELETE'
-      }).then(res => console.log('deleted:', res))
-
-    } catch (error) {
+      updateLogMsg({loading_dots: false, msg: null})
       updateProcessing(false)
-      updateLogMsg('An error occurred while trying talking to server.')
-      console.log(error)
-    }
+      updateMap(file)
+      
+      socket.emit('delete', id)
+      socket.close()
+    })
 
+    socket.on("connect_error", error => {
+      updateProcessing(false)
+      updateLogMsg({loading_dots: false, msg: 'An error occurred while trying talking to server.'})
+      
+      console.log(error)
+      socket.close()
+    })
+
+    socket.on("disconnect", () => {
+      console.log("Socket Disconnected")
+    })
   }
 
   const getImageData = (img, scale) => { 
@@ -97,14 +99,8 @@ const App = () => {
     return colors
   }
 
-  const handleLoaded = () => { 
-    const data = getImageData(imageRef.current, scaleValue)
-    imageRef.current && updateData(data)
-  }
-
-  const handleFiles = file => {
-    const blob = URL.createObjectURL(file)
-    updateFile(blob)
+  const handleLoaded = (scale) => { 
+    imageRef.current && updateData(getImageData(imageRef.current, scale))
   }
 
   const handleClear = () => {
@@ -112,33 +108,30 @@ const App = () => {
 
     updateFile(null)
     updateMap(null)
+    updateLogMsg({loading_dots: false, msg: null})
     updateProcessing(false)
     updateData([])
   }
 
   const handleProcessImage = () => {
-    console.log('handleProcessImage');
     navigator.vibrate(5)
     
-    updateLogMsg(null)
-    updateProcessing(!processing)
-    getImageFromServer('http://192.168.1.20:8000/image', data)
-  }
+    updateLogMsg({loading_dots: true, msg: null})
+    updateProcessing(true)
 
-  useEffect(() => {
-    imageRef.current && handleLoaded()
-  }, [imageRef, scaleValue])
+    getFromWebSocket('http://192.168.1.16:8000/', data)
+  }
 
   return ( 
     <div className="app">
       <div className='mosaic'>
-        <Toolbar file={file} processing={processing} logMsg={logMsg} handleClear={handleClear} handleProcessImage={handleProcessImage}/>
+        <Toolbar file={file} map={map} processing={processing} logMsg={logMsg} handleClear={handleClear} handleProcessImage={handleProcessImage}/>
         <CanvasImage data={data} map={map} processing={processing}/>
-        {file && <img ref={imageRef} src={file} alt='uploaded file' onLoad={handleLoaded}/>}
-        <ImageOverlay updateFile={updateFile}/>
-        <FileUpload accept=".jpg,.png,.jpeg" handler={handleFiles} />
+        {file && <img ref={imageRef} src={file} alt='uploaded file' onLoad={() => handleLoaded(scaleValue)}/>}
+        <FileInputOverlay updateFile={updateFile}/>
+        <FileUpload accept=".jpg, .png, .jpeg" updateFile={updateFile} />
       </div>
-      <RangeSlider scaleValue={scaleValue} processing={processing} upadateValue={upadateValue}/>
+      <RangeSlider scaleValue={scaleValue} map={map} processing={processing} upadateValue={upadateValue} handleLoaded={handleLoaded}/>
     </div>
   );
 }

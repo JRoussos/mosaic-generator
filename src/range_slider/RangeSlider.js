@@ -1,28 +1,29 @@
 import React from 'react'
 import './range_slider_styles.css'
 
-const RangeSlider = ({ scaleValue, upadateValue, processing }) => {
+const RangeSlider = ({ scaleValue, map, upadateValue, processing, handleLoaded }) => {
     const vals = [2, 3, 4, 5, 6]
+    const isSliderDisabled = map || processing
 
     const handleChange = (e) => {
-        if(processing) return
+        if(isSliderDisabled) return
         navigator.vibrate(3)
         
         const val = e.target.attributes['data-value']?.value || e.target.value
+        handleLoaded(parseInt(val))
         upadateValue(parseInt(val))
     }
 
     return (
         <div className='slider'>
-            <div className='values' style={processing ? {pointerEvents: 'none'} : null}>
+            <div className='values' style={isSliderDisabled ? {pointerEvents: 'none'} : null}>
                 {vals.map( (index) => (
                     <span onClick={handleChange} data-value={index} key={index} className={index === scaleValue ? 'active' : null}>1:{index}</span>
                 ))}
             </div>
-            <input type='range' min={2} max={6} value={scaleValue} onChange={handleChange} disabled={processing}/>
+            <input type='range' min={2} max={6} value={scaleValue} onChange={handleChange} disabled={isSliderDisabled}/>
             <div className='desc'>
-                <p>Control the scale of the area that will be replaced by an image.
-                Note that the larger the scale, the bigger the final image.</p>
+                <p>Move the slider to control the scale of the mosaic. Note that the smaller the scale, the longer it'll take to produce the final image.</p>
             </div>
         </div>
     )

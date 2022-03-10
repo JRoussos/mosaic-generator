@@ -42,6 +42,11 @@
     opacity: 0;
 }
 
+.loading-anim:after {
+    content: '.';
+    animation: dots 2s steps(5, end) 1s infinite;
+}
+
 .fade-in {
     animation: fade-in 0.6s cubic-bezier(0.23, 1, 0.320, 1) forwards;
     animation-delay: 0.8s;
@@ -60,7 +65,7 @@ button {
     border: none;
   
     cursor: pointer;
-    transition: all 0.1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    transition: transform 0.1s ease-in-out;
 }
 
 button:active {
@@ -68,6 +73,8 @@ button:active {
 }
 
 button:disabled {
+    opacity: 0.4;
+    transition: all 0.1s ease-in;
     filter: grayscale(1);
 }
 
@@ -83,14 +90,17 @@ button:disabled {
     background-repeat: no-repeat;
 }
 
+#download {
+    background: url('../assets/svg/download.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 #mosaic:not(:disabled) {
     animation: shake 2.5s cubic-bezier(.36,.07,.19,.97);
-    animation-iteration-count: infinite;
+    animation-delay: 1s;
+    animation-iteration-count: 3;
 }
-/* 
-#mosaic:hover {
-    animation: shake 3s cubic-bezier(.36,.07,.19,.97);
-} */
 
 @keyframes shake {
     8% {transform: rotate(0deg);}
@@ -112,6 +122,10 @@ button:disabled {
 }
 
 @keyframes dots {
-    0% {opacity: 1;}
-    100% {opacity: 0;}
+    0%, 20% { color: rgba(0,0,0,0);
+              text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+    40% { color: rgba(255, 255, 255, 0.5);
+          text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+    60% { text-shadow: .25em 0 0 rgba(255, 255, 255, 0.5), .5em 0 0 rgba(0,0,0,0); }
+    80%, 100% { text-shadow: .25em 0 0 rgba(255, 255, 255, 0.5), .5em 0 0 rgba(255, 255, 255, 0.5); }  
 }

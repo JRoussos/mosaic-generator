@@ -3,7 +3,7 @@ import './file_upload_styles.css'
 
 const DEFAULT_MAX_FILE_SIZE_IN_BYTES = 2000000;
 
-const FileUpload = ({label, handler, ...props}) => {
+const FileUpload = ({label, updateFile, ...props}) => {
     const [error, setError] = useState(false)
     const fileInputRef = useRef()
 
@@ -12,7 +12,7 @@ const FileUpload = ({label, handler, ...props}) => {
         let isImageFile = file.type.split("/")[0] === "image";
         if (file.size <= DEFAULT_MAX_FILE_SIZE_IN_BYTES && isImageFile) {
             setError(false)
-            handler(file)
+            updateFile(URL.createObjectURL(file))
         }else{
             setError(true)
             console.log("File is too big ")

@@ -96,18 +96,6 @@
         "id": "photo-1512682479844-0fa51f42b4a4"
     },
     {
-        "count": 4,
-        "dominantColor": [
-            1.2132725546045044,
-            0.5231838405716088,
-            0.1839442178900752
-        ],
-        "url": "https://images.unsplash.com/photo-1606516170542-2a6a36ab1562?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8cmVkfHx8fHx8MTY0NTI3NDQ4OA&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "/photos/photo4.jpg",
-        "colorCategory": "red",
-        "id": "photo-1606516170542-2a6a36ab1562"
-    },
-    {
         "count": 943,
         "dominantColor": [
             1.292782868451404,
@@ -300,18 +288,6 @@
         "id": "photo-1600673645627-1c47394132ac"
     },
     {
-        "count": 50,
-        "dominantColor": [
-            2.3102068565820417,
-            4.16428157564458,
-            1.8939638933477776
-        ],
-        "url": "https://images.unsplash.com/photo-1542911945-39ed8c8bc9cd?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8cmVkfHx8fHx8MTY0NTI3NDYwNQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "/photos/photo50.jpg",
-        "colorCategory": "red",
-        "id": "photo-1542911945-39ed8c8bc9cd"
-    },
-    {
         "count": 915,
         "dominantColor": [
             2.5258507494688267,
@@ -322,30 +298,6 @@
         "path": "/photos/photo915.jpg",
         "colorCategory": "black",
         "id": "photo-1570876050997-2fdefb00c004"
-    },
-    {
-        "count": 16,
-        "dominantColor": [
-            2.6518163602288283,
-            2.2638817831589497,
-            -0.9614957629108467
-        ],
-        "url": "https://images.unsplash.com/photo-1575041051612-323e644ca1b8?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8cmVkfHx8fHx8MTY0NTI3NDUxMg&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "/photos/photo16.jpg",
-        "colorCategory": "red",
-        "id": "photo-1575041051612-323e644ca1b8"
-    },
-    {
-        "count": 39,
-        "dominantColor": [
-            2.6518163602288283,
-            2.2638817831589497,
-            -0.9614957629108467
-        ],
-        "url": "https://images.unsplash.com/photo-1575041051612-323e644ca1b8?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8cmVkfHx8fHx8MTY0NTI3NDU3Nw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "/photos/photo39.jpg",
-        "colorCategory": "red",
-        "id": "photo-1575041051612-323e644ca1b8"
     },
     {
         "count": 322,

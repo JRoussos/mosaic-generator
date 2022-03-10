@@ -45,22 +45,21 @@ const CanvasImage = ({ data, map, processing }) => {
 
     const canvasStyle = {
         position: 'absolute',
-        zIndex: 20,
+        zIndex: width > 0 ? 20 : 0,
         cursor: 'pointer'
     } 
 
-    return width > 0 ? (
+    return (
         <div onPointerDown={handleTouchStart} onPointerUp={handleTouchEnd} onPointerMove={() => clearTimeout(timer)}>
             <Canvas ref={canvasRef} dpr={[window.devicePixelRatio, 2]} camera={cameraProps} style={canvasStyle}>
-                <Suspense fallback={null}>
-                    { !map ? 
-                        <DataImage data={data} pixels={pixels} width={width} processing={processing}/> :
-                        <ServerImage map={map}/> }
+                <Suspense fallback={null}>                    
+                    {data && <DataImage data={data} pixels={pixels} width={width} processing={processing}/>}
+                    {map  && <ServerImage map={map}/>}
                 </Suspense>
                 <OrbitControls ref={orbitRef} enablePan={!processing} enableZoom={!processing} enableRotate={false} enableDamping={false} maxDistance={100}/>
             </Canvas>
         </div>
-    ) : null
+    )
 }
 
 export default CanvasImage
