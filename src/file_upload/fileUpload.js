@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import './file_upload_styles.css'
 
-const DEFAULT_MAX_FILE_SIZE_IN_BYTES = 2000000;
+const DEFAULT_MAX_FILE_SIZE_IN_BYTES = 10000000;
 
 const FileUpload = ({label, updateFile, ...props}) => {
     const [error, setError] = useState(false)
@@ -27,7 +27,7 @@ const FileUpload = ({label, updateFile, ...props}) => {
     return (
         <React.Fragment>
             <input type='file' ref={fileInputRef} onChange={handleOnFileChange} title='' value='' {...props}/>
-            {error && <p className='error'>You should upload an image with a max size of 2 MB, try a smaller image or use the demo one</p>}
+            {error && <p className='error'>You should upload an image with a max size of 10 MB, try a smaller image or use the demo one</p>}
         </React.Fragment>
     )
 }

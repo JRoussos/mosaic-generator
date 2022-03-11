@@ -52,7 +52,7 @@ const deltaE = (labA, labB) => {
 }
 
 const getSimilarArray = (clientImageData) => {
-    console.log("JSON Size: ", JSON_DATA_LENGTH);
+    console.log("Images Available: ", JSON_DATA_LENGTH);
 
     const sortedDistances = []
 
@@ -70,21 +70,17 @@ const getSimilarArray = (clientImageData) => {
             return 0; // a must be equal to b
         })
 
-        // const idx = labValues.findIndex(element => Math.ceil(element.distance) > SIMILARITY_THRESHOLD)
-        // console.log(index);
         sortedDistances.push(labValues)
     }
     return sortedDistances
 }
 
-const getRandom = (max) => {
-    /**
-     * random index at the imagesSimilarWithThisPixel array.
-     * the result is more likely to be closer to zero, following a quadratic curve.
-     */
+/**
+ * random index at the imagesSimilarWithThisPixel array.
+ * The result is more likely to be closer to zero, following a quadratic curve.
+ */
 
-    return Math.floor(Math.pow(Math.random(), 2) * max) 
-}
+const getRandom = (max) => Math.floor(Math.pow(Math.random(), 2) * max) 
 
 const getJimpInstance = (path, count) => {
     if(CACHED_PHOTOS[count]) {
@@ -118,7 +114,7 @@ const createImage = (reseivedColorValuesLength, sortedDistances,) => {
 
         for(let k = 0; k < DUPLICATE_DEPTH_CHECK; k++) {
             let looping = true
-            while(looping){
+            while(looping) {
                 let prevColumnCheck = matrix[i - k] === images_with_lowest_delta[indx].count
                 let prevRowLCheck   = matrix[(i - OG_IMAGE_SIZE) - k] === images_with_lowest_delta[indx].count
                 let prevRowRCheck   = matrix[(i - OG_IMAGE_SIZE) + k] === images_with_lowest_delta[indx].count
@@ -142,37 +138,62 @@ const createImage = (reseivedColorValuesLength, sortedDistances,) => {
     return id
 }
 
+const saveLog = (reseivedColorValuesLength, performanceInSeconds) => {
+    const rData = fs.readFileSync('logs.json')
+    const logs = JSON.parse(rData)
+
+    let avg = logs.find(element => element.scale === reseivedColorValuesLength)
+    if (avg) {
+        avg['count'] ++
+        avg['eta'] = (avg['eta'] + performanceInSeconds) / avg['count']
+    }else logs.push({ "scale": reseivedColorValuesLength, "count": 1, "eta": performanceInSeconds })
+
+    const wData = JSON.stringify(logs)
+    fs.writeFileSync('logs.json', wData)
+}
+
+router.get('/times', (req, res) => {
+    const scale = req.query.scale
+    const rData = fs.readFileSync('logs.json')
+
+    const logs = JSON.parse(rData)
+    const avg  = logs.find(element => element.scale === scale)
+    res.send({ success: true, average: avg.eta || -1})
+})
+
 router.get('/', (req, res) => {
     const id = req.query.id
+    
     const fileName = `${id}.jpg`
+    const pathToFile = path.join(process.cwd(), 'out', fileName)
 
-    const options = {
-        root: path.join(process.cwd(), 'out')
-    }
-
-    res.sendFile(fileName, options, (err) => {
-        if (err) res.send({error: err})
+    res.sendFile(pathToFile, (error) => {
+        if (error) res.status(404).send({ success: false, error: error })
     })
 })
 
 router.post('/', (req, res) => {
     const reseivedColorValues = req.body
-    const t0 = performance.now();
+    console.log('Request body length: ', reseivedColorValues.length);
+    const t0 = performance.now()
     
     const similarArray = getSimilarArray(reseivedColorValues)
     const id = createImage(reseivedColorValues.length, similarArray)
     
-    console.log('Image was created, sending now...');
-    const t1 = performance.now();
+    console.log('Image was created, sending now...')
+    const t1 = performance.now()
+    const performanceInSeconds = (t1 - t0) /1000
 
-    res.send({ success: true, id: id, eta: (t1 - t0) /1000 });
-    console.log('DONE: ', id, 'eta: ', (t1 - t0) /1000);
+    setTimeout(() => {
+        res.send({ success: true, id: id, eta: performanceInSeconds })
+        console.log('DONE: ', id, 'eta: ', performanceInSeconds)
+    }, 500)
 })
 
 router.delete('/', (req, res) => {
     const id = req.query.id
-    const fileName = `${id}.jpg`
 
+    const fileName = `${id}.jpg`
     const pathToFile = path.join(process.cwd(), 'out', fileName)
 
     fs.unlink(pathToFile, (err) => {

@@ -1,4 +1,5 @@
 import React from 'react'
+import Attribution from '../attribution/attribution'
 import './range_slider_styles.css'
 
 const RangeSlider = ({ scaleValue, map, upadateValue, processing, handleLoaded }) => {
@@ -24,6 +25,7 @@ const RangeSlider = ({ scaleValue, map, upadateValue, processing, handleLoaded }
             <input type='range' min={2} max={6} value={scaleValue} onChange={handleChange} disabled={isSliderDisabled}/>
             <div className='desc'>
                 <p>Move the slider to control the scale of the mosaic. Note that the smaller the scale, the longer it'll take to produce the final image.</p>
+                <Attribution/>
             </div>
         </div>
     )

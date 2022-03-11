@@ -180,7 +180,7 @@ io.on('connection', (socket) => {
         const fileName = `${id}.jpg`
         const pathToFile = path.join(process.cwd(), 'out', fileName)
 
-        console.log({ success: true, msg: `delete: ${pathToFile}`})
+        console.log({ success: true, msg: `delete: ${fileName}`})
     
         fs.unlink(pathToFile, (err) => {
             if (err) console.log({ success: false, error: err })

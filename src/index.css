@@ -8,4 +8,9 @@ body {
   -webkit-tap-highlight-color: transparent;
 
   background: #111;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }

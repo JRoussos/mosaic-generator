@@ -7,11 +7,11 @@ app.use(cors())
 app.use(express.json({limit: '2mb'}))
 // app.use(express.urlencoded({limit: '2mb'}))
 
-app.use('/image', require('./routes/image'))
-app.use('/api', require('./routes/api'))
+app.use('/v2/image', require('./routes/image'))
+app.use('/v1/image', require('./routes/api'))
 
 app.use((req, res) => {
-    res.status(404).send({ error: { error: "nothing_found", error_description: "Page not found" }})
+    res.status(404).send({ success: false, error: 'Page not found' })
 })
 
 const port = process.env.PORT || 8000

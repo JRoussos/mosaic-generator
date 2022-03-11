@@ -1,0 +1,23 @@
+.attribution {
+    padding-top: 10px;
+    text-transform: lowercase;
+    font-size: 13px !important;
+}
+
+.attribution path {
+    fill: rgba(255, 255, 255, 0.3);
+}
+
+.attribution a {
+    color: rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: color 0.2s ease-in;
+}
+
+.attribution a:hover {
+    color: rgba(255, 255, 255, 0.8); 
+}
