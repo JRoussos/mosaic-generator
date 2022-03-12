@@ -1,9 +1,11 @@
 const express   = require("express")
+const {Server}  = require("socket.io")
+
 const path      = require("path")
 const Jimp      = require("jimp")
 const fs        = require("fs")
 
-const router = express.Router()
+const app = express()
 
 const JSON_RAW = fs.readFileSync('./assets/photos5.json')
 const JSON_DATA = JSON.parse(JSON_RAW)
@@ -75,11 +77,14 @@ const getSimilarArray = (clientImageData) => {
     return sortedDistances
 }
 
-/**
- * random index at the imagesSimilarWithThisPixel array.
- * The result is more likely to be closer to zero, following a quartic curve.
- */
-const getRandom = (max) => Math.floor(Math.pow(Math.random(), 4) * max) 
+const getRandom = (max) => {
+    /**
+     * random index at the imagesSimilarWithThisPixel array.
+     * the result is more likely to be closer to zero, following a quadratic curve.
+     */
+
+    return Math.floor(Math.pow(Math.random(), 2) * max) 
+}
 
 const getJimpInstance = (path, count) => {
     if(CACHED_PHOTOS[count]) {
@@ -137,68 +142,48 @@ const createImage = (reseivedColorValuesLength, sortedDistances,) => {
     return id
 }
 
-const saveLog = (reseivedColorValuesLength, performanceInSeconds) => {
-    const rData = fs.readFileSync('logs.json')
-    const logs = JSON.parse(rData)
-
-    let avg = logs.find(element => element.scale === reseivedColorValuesLength)
-    if (avg) {
-        avg['count'] ++
-        avg['eta'] = (avg['eta'] + performanceInSeconds) / avg['count']
-    }else logs.push({ "scale": reseivedColorValuesLength, "count": 1, "eta": performanceInSeconds })
-
-    const wData = JSON.stringify(logs)
-    fs.writeFileSync('logs.json', wData)
-}
-
-router.get('/times', (req, res) => {
-    const scale = req.query.scale
-    const rData = fs.readFileSync('logs.json')
-
-    const logs = JSON.parse(rData)
-    const avg  = logs.find(element => element.scale === scale)
-    res.send({ success: true, average: avg.eta || -1})
+/** Server Index */
+const port = process.env.PORT || 8000
+const io = new Server(app.listen(port, () => console.log(`Server started on port ${port}`)), {
+    cors: {
+        origin: "http://192.168.1.16:3000"
+    }
 })
 
-router.get('/', (req, res) => {
-    const id = req.query.id
-    
-    const fileName = `${id}.jpg`
-    const pathToFile = path.join(process.cwd(), 'out', fileName)
+io.on('connection', (socket) => {
+    console.log(`Client connected: ${socket.id}`)
 
-    res.sendFile(pathToFile, (error) => {
-        if (error) res.status(404).send({ success: false, error: error })
+    socket.on('data', reseivedColorValues => {
+        const t0 = performance.now();
+
+        const similarArray = getSimilarArray(reseivedColorValues)
+        const id = createImage(reseivedColorValues.length, similarArray)
+
+        console.log('Image was created, sending now...');
+        const t1 = performance.now();
+
+        socket.emit('image_id', id)
+        console.log('DONE: ', id, 'eta: ', (t1 - t0) /1000);
     })
-})
 
-router.post('/', (req, res) => {
-    const reseivedColorValues = req.body
-    console.log('Request body length: ', reseivedColorValues.length);
-    const t0 = performance.now()
-    
-    const similarArray = getSimilarArray(reseivedColorValues)
-    const id = createImage(reseivedColorValues.length, similarArray)
-    
-    console.log('Image was created, sending now...')
-    const t1 = performance.now()
-    const performanceInSeconds = (t1 - t0) /1000
+    socket.on('image', id => {
+        const fileName = `${id}.jpg`
+        const pathToFile = path.join(process.cwd(), 'out', fileName)
 
-    setTimeout(() => {
-        res.send({ success: true, id: id, eta: performanceInSeconds })
-        console.log('DONE: ', id, 'eta: ', performanceInSeconds)
-    }, 500)
-})
-
-router.delete('/', (req, res) => {
-    const id = req.query.id
-
-    const fileName = `${id}.jpg`
-    const pathToFile = path.join(process.cwd(), 'out', fileName)
-
-    fs.unlink(pathToFile, (err) => {
-        if (err) res.send({ success: false, error: err })
-        else res.send({ success: true, id: id})
+        fs.readFile(pathToFile, (error, buffer) => {
+            if(error) socket._error('File read error')
+            else socket.emit('image_buffer', {buffer: buffer, id: id})
+        })
     })
-})
 
-module.exports = router
+    socket.on('delete', id => {
+        const fileName = `${id}.jpg`
+        const pathToFile = path.join(process.cwd(), 'out', fileName)
+
+        console.log({ success: true, msg: `delete: ${fileName}`})
+    
+        fs.unlink(pathToFile, (err) => {
+            if (err) console.log({ success: false, error: err })
+        })
+    })
+})  
