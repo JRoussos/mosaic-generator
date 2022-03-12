@@ -22,8 +22,8 @@ The basic idea is simple, I calculate the average rgb values of a certain area o
 
 <br>
 
-The original image         |  The final mosaic generated
-:-------------------------:|:-------------------------:
+The original image         | The final mosaic generated
+:-------------------------:|:----------------------------:
 ![](demo.jpg)              |  ![](mosaic.jpg)
 
 ### Optimization
