@@ -9,7 +9,6 @@ const JSON_RAW = fs.readFileSync('./assets/photos5.json')
 const JSON_DATA = JSON.parse(JSON_RAW)
 const JSON_DATA_LENGTH = JSON_DATA.length
 
-const CACHED_PHOTOS = new Array(JSON_DATA_LENGTH)
 const SIMILARITY_ARRAY_LENGTH = 30
 
 const rgb2lab = (rgb) => {
@@ -81,7 +80,7 @@ const getSimilarArray = (clientImageData) => {
  */
 const getRandom = (max) => Math.floor(Math.pow(Math.random(), 4) * max) 
 
-const getJimpInstance = (path, count) => {
+const getJimpInstance = (path, count, CACHED_PHOTOS) => {
     if(CACHED_PHOTOS[count]) {
         return CACHED_PHOTOS[count]
     }else {
@@ -94,7 +93,7 @@ const getJimpInstance = (path, count) => {
     }
 }
 
-const createImage = (reseivedColorValuesLength, sortedDistances,) => {
+const createImage = (reseivedColorValuesLength, sortedDistances, CACHED_PHOTOS) => {
     const THUMBNAIL_IMAGE_SIZE = 50
     const DUPLICATE_DEPTH_CHECK = 2
     
@@ -126,7 +125,7 @@ const createImage = (reseivedColorValuesLength, sortedDistances,) => {
         const { path, count } = images_with_lowest_delta[indx]
         matrix.push(count)
         
-        const baseImg = getJimpInstance(path, count)
+        const baseImg = getJimpInstance(path, count, CACHED_PHOTOS)
         baseImg.resize(THUMBNAIL_IMAGE_SIZE, THUMBNAIL_IMAGE_SIZE)
         emptyNewImage.composite(baseImg, x, y)
     }
@@ -172,12 +171,14 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
+    const CACHED_PHOTOS = new Array(JSON_DATA_LENGTH)
+
     const reseivedColorValues = req.body
     console.log('Request body length: ', reseivedColorValues.length);
     const t0 = performance.now()
     
     const similarArray = getSimilarArray(reseivedColorValues)
-    const id = createImage(reseivedColorValues.length, similarArray)
+    const id = createImage(reseivedColorValues.length, similarArray, CACHED_PHOTOS)
     
     console.log('Image was created, sending now...')
     const t1 = performance.now()
