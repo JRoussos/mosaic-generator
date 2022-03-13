@@ -1,9 +1,9 @@
 # Mosaica - A site to generate a mosaic of photos 
 
-[![](preview.gif "Live Preview")](http://mosaica.netlify.com/)
+[![](preview.gif "Live Preview")](https://mosaica.netlify.app/)
 
-### Check it out at: [http://mosaica.netlify.com/](http://mosaica.netlify.com/) 
-#### At the time the processing server is not live. You can check out the site (as it is hosted on netlify), but it won't generate a mosaic. You can run it locally however 😉.
+### Check it out at: [mosaica.netlify.app](https://mosaica.netlify.app/) 
+At the moment the processing server is not live. The site itself is hosted on netlify and so it available to check it out, but it won't generate a mosaic. You can however run it locally 😉
 
 ### The idea
 <hr>
@@ -12,19 +12,23 @@ So I had a conversation with a friend about how cool the concept of generating m
 
 The basic idea is simple, I calculate the average rgb values of a certain area of the image (mask). Then those average values are sent to a node server and processed. The server tries for each average to find an image with its dominant color closest to that value. If the neighbor pixels are similar in color e.g. an with a blue sky background, it'll try to use different images to avoid repetetion. Then it compiles a new image populated by those pictures selected to better match that area and sends the result back to the front end. 
 
-### I used
-<hr>
+For the images I used a python script to fetch random images from [source.unsplash.com/random](https://source.unsplash.com/random) and output a json with their dominant color calculated. 
 
-[gsap](https://www.npmjs.com/package/gsap) for animations and interpolate values passed to the shader.<br> 
-[react-three/fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction) for the shaders. <br>
-[jimp](https://www.npmjs.com/package/jimp) to stich the final image together on the server. <br>
-[rgb-lab](https://github.com/antimatter15/rgb-lab/blob/master/color.js) to convert rgb to lab values and comparing the difference between two labs
 
 <br>
 
-The original image         | The final mosaic generated
+The original image         | The mosaic generated
 :-------------------------:|:----------------------------:
 ![](demo.jpg)              |  ![](mosaic.jpg)
+
+### I used
+<hr>
+
+[gsap](https://www.npmjs.com/package/gsap) for animations and interpolate values passed to the shader<br> 
+[react-three/fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction) for the shaders<br>
+[jimp](https://www.npmjs.com/package/jimp) to stich the final image together on the server<br>
+[rgb-lab](https://github.com/antimatter15/rgb-lab/blob/master/color.js) to convert rgb to lab values and comparing the difference between two labs <br>
+[color-thief-py](https://github.com/fengsp/color-thief-py) to extract the color palette of images
 
 ### Optimization
 <hr>
@@ -50,9 +54,11 @@ Then `npm install` and `npm start` at the root and the server folder et voilà!
 ### Caveats and possible future changes
 <hr>
 
-Right now the input image and as a result the output mosaic is limited to a square aspect ratio. Images with different ratio will default to a center crop. I would like to keep the maintain the ratio of the input image.
+1. Right now the input image and as a result the output mosaic is limited to a square aspect ratio. Images with different ratio will default to a center crop. I would like to keep the maintain the ratio of the input image.
 
-I would also like to have a way to inform the client about the estimated time for the mosaic to be done. I tried to use websockets to send back some kind of indication but it didn't work. My next thought was to keep a log file at the server side and keep track of the average times so that the client will have some vague idea about the eta.
+2. I would also like to have a way to inform the client about the estimated time for the mosaic to be done. I tried to use websockets to send back some kind of indication but it didn't work. My next thought was to keep a log file at the server side and keep track of the average times so that the client will have some vague idea about the eta.
+
+3. Another good idea would be to change the python script so that it can fetch specific images like generate a mosaic only from pictures of animals, or from photos you already have on storage.
 
 ### MIT License
 <hr>
