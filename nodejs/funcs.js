@@ -92,11 +92,13 @@ const getJimpInstance = (path, count) => {
     }
 }
 
-const createImage = (reseivedColorValuesLength, sortedDistances, dimensions) => {
-    const THUMBNAIL_IMAGE_SIZE = 50
-    const DUPLICATE_DEPTH_CHECK = 2
-    
+const createImage = (reseivedColorValuesLength, sortedDistances, dimensions, options) => {
     const { HEIGHT_SCALED, WIDTH_SCALED, RATIO } = dimensions
+    let {final, thumbs, duplicate } = options
+
+    const THUMBNAIL_IMAGE_SIZE = parseInt(thumbs)
+    const DUPLICATE_DEPTH_CHECK = parseInt(duplicate)
+    
     const OG_IMAGE_SIZE = {
         w: reseivedColorValuesLength / HEIGHT_SCALED,
         h: reseivedColorValuesLength / WIDTH_SCALED
@@ -137,19 +139,25 @@ const createImage = (reseivedColorValuesLength, sortedDistances, dimensions) => 
     }
 
     const file_name = `mosaic_${new Date().getTime()}.jpg`
-    const new_width  = OG_IMAGE_SIZE.w >= OG_IMAGE_SIZE.h ? 1080 : 1080 / RATIO
-    const new_height = OG_IMAGE_SIZE.h >= OG_IMAGE_SIZE.w ? 1080 : 1080 / RATIO
-
-    emptyNewImage.resize(new_width, new_height).write(`./out/${file_name}`)
+    
+    if(final === 'auto') 
+        emptyNewImage.write(`./out/${file_name}`)   
+    else {
+        final = parseInt(final)
+        const new_width  = OG_IMAGE_SIZE.w >= OG_IMAGE_SIZE.h ? final : final / RATIO
+        const new_height = OG_IMAGE_SIZE.h >= OG_IMAGE_SIZE.w ? final : final / RATIO
+    
+        emptyNewImage.resize(new_width, new_height).write(`./out/${file_name}`)
+    }
 
     return file_name
 }
 
-const processImageData = (colorValues, dimensions) => {
+const processImageData = (colorValues, dimensions, options) => {
     const t0 = performance.now()
     
     const similarArray = getSimilarArray(colorValues)
-    const file = createImage(colorValues.length, similarArray, dimensions)
+    const file = createImage(colorValues.length, similarArray, dimensions, options)
     
     const t1 = performance.now()
     const performanceInSeconds = (t1 - t0) /1000
@@ -158,45 +166,52 @@ const processImageData = (colorValues, dimensions) => {
     console.log(`Image was created at './out/${file}'`);
 }
 
-const getImageData = async (path, scale) => {
-    const image = await loadImage(`${path}`)
+const getImageData = async (path, options) => {
+    const scale = parseInt(options.scale)
 
-    const { width, height } = image
-    const aspect_ratio  = Math.max(width, height) / Math.min(width, height)
-    const canvas_width  = width  >= height ? IMAGE_SIZE : Math.round(IMAGE_SIZE / aspect_ratio)
-    const canvas_height = height >= width  ? IMAGE_SIZE : Math.round(IMAGE_SIZE / aspect_ratio)
+    try {
+        const loaded_image = await loadImage(`${path}`)
+        
+        const { width, height } = loaded_image
+        const aspect_ratio  = Math.max(width, height) / Math.min(width, height)
+        const canvas_width  = width  >= height ? IMAGE_SIZE : Math.round(IMAGE_SIZE / aspect_ratio)
+        const canvas_height = height >= width  ? IMAGE_SIZE : Math.round(IMAGE_SIZE / aspect_ratio)
 
-    const canvas = createCanvas(canvas_width, canvas_height)
-    const ctx = canvas.getContext('2d')
+        const canvas = createCanvas(canvas_width, canvas_height)
+        const ctx = canvas.getContext('2d')
 
-    console.log("Canvas Size: ",canvas_width, canvas_height);
+        console.log("Canvas Size: ",canvas_width, canvas_height);
 
-    ctx.drawImage(image, 0, 0, canvas_width, canvas_height)
+        ctx.drawImage(loaded_image, 0, 0, canvas_width, canvas_height)
 
-    const colors = []
-    const maskSize = scale*scale
-  
-    for (let i = 0; i < canvas_height; i += scale) {
-      for (let k = 0; k < canvas_width; k += scale) {
-        const imgData = ctx.getImageData(k, i, scale, scale)
-        const data = Float32Array.from(imgData.data)
+        const colors = []
+        const maskSize = scale*scale
+    
+        for (let i = 0; i < canvas_height; i += scale) {
+            for (let k = 0; k < canvas_width; k += scale) {
+                const imgData = ctx.getImageData(k, i, scale, scale)
+                const data = Float32Array.from(imgData.data)
 
-        const rgb = [0, 0, 0]
-        for (let index = 0; index < data.length/4; index++) {
-          rgb[0] += data[index*4+0]
-          rgb[1] += data[index*4+1]
-          rgb[2] += data[index*4+2]
-        } 
+                const rgb = [0, 0, 0]
+                for (let index = 0; index < data.length/4; index++) {
+                rgb[0] += data[index*4+0]
+                rgb[1] += data[index*4+1]
+                rgb[2] += data[index*4+2]
+                } 
 
-        colors.push([
-          rgb[0] = Math.floor(rgb[0] / maskSize),
-          rgb[1] = Math.floor(rgb[1] / maskSize),
-          rgb[2] = Math.floor(rgb[2] / maskSize),
-        ])
-      }
+                colors.push([
+                rgb[0] = Math.floor(rgb[0] / maskSize),
+                rgb[1] = Math.floor(rgb[1] / maskSize),
+                rgb[2] = Math.floor(rgb[2] / maskSize),
+                ])
+            }
+        }
+
+        processImageData(colors, { WIDTH_SCALED: canvas_width/scale, HEIGHT_SCALED: canvas_height/scale, RATIO: aspect_ratio }, options)
+
+    } catch (error) {
+        console.log(error.message)
     }
-
-    processImageData(colors, { WIDTH_SCALED: canvas_width/scale, HEIGHT_SCALED: canvas_height/scale, RATIO: aspect_ratio })
 }
 
 module.exports = {
