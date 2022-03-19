@@ -95,18 +95,16 @@ const getJimpInstance = (path, count) => {
 const createImage = (reseivedColorValuesLength, sortedDistances, dimensions) => {
     const THUMBNAIL_IMAGE_SIZE = 50
     const DUPLICATE_DEPTH_CHECK = 2
-
-    const SQRT_LENGTH = Math.sqrt(reseivedColorValuesLength)
     
+    const { HEIGHT_SCALED, WIDTH_SCALED, RATIO } = dimensions
     const OG_IMAGE_SIZE = {
-        w: 65,//Math.trunc(SQRT_LENGTH * dimensions.aspect),
-        h: 41//Math.trunc(reseivedColorValuesLength / (SQRT_LENGTH * dimensions.aspect))
+        w: reseivedColorValuesLength / HEIGHT_SCALED,
+        h: reseivedColorValuesLength / WIDTH_SCALED
     }
     const FINAL_IMAGE_SIZE = {
         w: OG_IMAGE_SIZE.w * THUMBNAIL_IMAGE_SIZE,
         h: OG_IMAGE_SIZE.h * THUMBNAIL_IMAGE_SIZE
     }
-    console.log(OG_IMAGE_SIZE, FINAL_IMAGE_SIZE, dimensions, reseivedColorValuesLength, );
     
     const emptyNewImage = new Jimp(FINAL_IMAGE_SIZE.w, FINAL_IMAGE_SIZE.h)
     const matrix = []
@@ -133,14 +131,14 @@ const createImage = (reseivedColorValuesLength, sortedDistances, dimensions) => 
         const { path, count } = images_with_lowest_delta[indx]
         matrix.push(count)
         
-        const baseImg = getJimpInstance(path, count, CACHED_PHOTOS)
+        const baseImg = getJimpInstance(path, count)
         baseImg.resize(THUMBNAIL_IMAGE_SIZE, THUMBNAIL_IMAGE_SIZE)
         emptyNewImage.composite(baseImg, x, y)
     }
 
     const file_name = `mosaic_${new Date().getTime()}.jpg`
-    const new_width  = OG_IMAGE_SIZE.w >= OG_IMAGE_SIZE.h ? 1080 : 1080 / dimensions.aspect
-    const new_height = OG_IMAGE_SIZE.h >= OG_IMAGE_SIZE.w ? 1080 : 1080 / dimensions.aspect
+    const new_width  = OG_IMAGE_SIZE.w >= OG_IMAGE_SIZE.h ? 1080 : 1080 / RATIO
+    const new_height = OG_IMAGE_SIZE.h >= OG_IMAGE_SIZE.w ? 1080 : 1080 / RATIO
 
     emptyNewImage.resize(new_width, new_height).write(`./out/${file_name}`)
 
@@ -164,9 +162,9 @@ const getImageData = async (path, scale) => {
     const image = await loadImage(`${path}`)
 
     const { width, height } = image
-    const aspect_ratio  = (Math.max(width, height) / Math.min(width, height)).toFixed(2)
-    const canvas_width  = width  >= height ? IMAGE_SIZE : Math.trunc(IMAGE_SIZE / aspect_ratio)
-    const canvas_height = height >= width  ? IMAGE_SIZE : Math.trunc(IMAGE_SIZE / aspect_ratio)
+    const aspect_ratio  = Math.max(width, height) / Math.min(width, height)
+    const canvas_width  = width  >= height ? IMAGE_SIZE : Math.round(IMAGE_SIZE / aspect_ratio)
+    const canvas_height = height >= width  ? IMAGE_SIZE : Math.round(IMAGE_SIZE / aspect_ratio)
 
     const canvas = createCanvas(canvas_width, canvas_height)
     const ctx = canvas.getContext('2d')
@@ -178,8 +176,8 @@ const getImageData = async (path, scale) => {
     const colors = []
     const maskSize = scale*scale
   
-    for (let i = 0; i < canvas_width; i += scale) {
-      for (let k = 0; k < canvas_height; k += scale) {
+    for (let i = 0; i < canvas_height; i += scale) {
+      for (let k = 0; k < canvas_width; k += scale) {
         const imgData = ctx.getImageData(k, i, scale, scale)
         const data = Float32Array.from(imgData.data)
 
@@ -198,7 +196,7 @@ const getImageData = async (path, scale) => {
       }
     }
 
-    processImageData(colors, { canvas_width, canvas_height, aspect_ratio })
+    processImageData(colors, { WIDTH_SCALED: canvas_width/scale, HEIGHT_SCALED: canvas_height/scale, RATIO: aspect_ratio })
 }
 
 module.exports = {
