@@ -1,6 +1,8 @@
-# Mosaica - A site to generate a mosaic of photos 
+# Mosaica - A tool to generate a mosaic of photos 
 
 [![](preview.gif "Live Preview")](https://mosaica.netlify.app/)
+
+### I made a standalone version of this in Node.js [here](./nodejs/)
 
 ### Check it out at: [mosaica.netlify.app](https://mosaica.netlify.app/) 
 At the moment the processing server is not live. The site itself is hosted on netlify and so it available to check it out, but it won't generate a mosaic. You can however run it locally 😉

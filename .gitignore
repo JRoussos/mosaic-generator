@@ -31,3 +31,8 @@ server/assets/photos/
 server/node_modules
 server/out
 server/colorfns.js
+
+# node
+nodejs/assets/photos/
+nodejs/node_modules
+nodejs/out
