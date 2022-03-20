@@ -1,5 +1,5 @@
 const { program } = require('commander');
-const tools = require('./funcs')
+const processImage = require('./lib/processImage')
 
 program
   .name('mosaica')
@@ -13,7 +13,7 @@ program
   .option('-t, --thumbs <number>', 'Thumbnail size', 50)
   .option('-f, --final <number | auto>', 'Final dimensions of mosaic', 1080)
   .action((str, options) => {
-    tools.getImageData(str, options)
+    processImage(str, options)
   });
 
-program.parse();
+program.parse()
