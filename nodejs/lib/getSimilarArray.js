@@ -44,7 +44,7 @@ const deltaE = (labA, labB) => {
 }
 
 module.exports = (clientImageData, JSON_DATA) => {
-    console.log("Images Available: ", JSON_DATA.length);
+    // console.log("Images Available: ", JSON_DATA.length);
 
     const sortedDistances = []
 
@@ -54,7 +54,6 @@ module.exports = (clientImageData, JSON_DATA) => {
             const { count, path, dominantColor } = element
             return { count: count, path: path, distance: deltaE(dominantColor, value) }
         })
-        
         
         labValues.sort((a, b) => {
             if (a.distance > b.distance) return 1

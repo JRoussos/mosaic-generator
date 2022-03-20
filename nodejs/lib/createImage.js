@@ -1,5 +1,6 @@
 const Jimp = require("jimp")
 const utils = require('./utils')
+const LoadingBar = require('./loadingBar')
 
 module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimensions, options) => {
     const { HEIGHT_SCALED, WIDTH_SCALED, RATIO } = dimensions
@@ -21,6 +22,8 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
     
     const emptyNewImage = new Jimp(FINAL_IMAGE_SIZE.w, FINAL_IMAGE_SIZE.h)
     const matrix = []
+
+    const Bar = new LoadingBar(COLOR_VALUES_LENGHT)
 
     for(let i = 0; i < COLOR_VALUES_LENGHT; i++) {
         let x = (i%OG_IMAGE_SIZE.w) * THUMBNAIL_IMAGE_SIZE
@@ -47,6 +50,8 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         const baseImg = utils.getJimpInstance(path, count, CACHED_PHOTOS)
         baseImg.resize(THUMBNAIL_IMAGE_SIZE, THUMBNAIL_IMAGE_SIZE)
         emptyNewImage.composite(baseImg, x, y)
+
+        Bar.update(i)
     }
 
     const file_name = `mosaic_${new Date().getTime()}.jpg`
@@ -61,5 +66,6 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         emptyNewImage.resize(new_width, new_height).write(`./out/${file_name}`)
     }
 
+    Bar.clear()
     return file_name
 }

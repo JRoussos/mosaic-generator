@@ -19,8 +19,8 @@ const processImageData = (colorValues, dimensions, options) => {
     const t1 = performance.now()
     const performanceInSeconds = (t1 - t0) /1000
 
-    console.log('\x1b[32mDONE: \x1b[0m', performanceInSeconds.toFixed(2)+'s');
-    console.log(`Image was created at '\x1b[33m./out/${file}\x1b[0m'`);
+    console.log('\x1b[32m[DONE] \x1b[0m', '- Time Elapsed: ', performanceInSeconds.toFixed(2)+'s')
+    console.log(`Image was created at '\x1b[33m./out/${file}\x1b[0m'`)
 }
 
 module.exports = async (path, options) => {
@@ -37,7 +37,7 @@ module.exports = async (path, options) => {
         const canvas = createCanvas(canvas_width, canvas_height)
         const ctx = canvas.getContext('2d')
 
-        console.log("Canvas Size: ",canvas_width, canvas_height);
+        // console.log("Canvas Size: ",canvas_width, canvas_height);
 
         ctx.drawImage(loaded_image, 0, 0, canvas_width, canvas_height)
 
