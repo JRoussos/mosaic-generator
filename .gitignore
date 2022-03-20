@@ -36,3 +36,4 @@ server/colorfns.js
 nodejs/assets/photos/
 nodejs/node_modules
 nodejs/out
+nodejs/*.jpg

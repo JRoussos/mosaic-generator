@@ -94,7 +94,9 @@ const getJimpInstance = (path, count) => {
 
 const createImage = (reseivedColorValuesLength, sortedDistances, dimensions, options) => {
     const { HEIGHT_SCALED, WIDTH_SCALED, RATIO } = dimensions
-    let {final, thumbs, duplicate } = options
+
+    console.log(WIDTH_SCALED, HEIGHT_SCALED);
+    let {final, thumbs, duplicate} = options
 
     const THUMBNAIL_IMAGE_SIZE = parseInt(thumbs)
     const DUPLICATE_DEPTH_CHECK = parseInt(duplicate)
@@ -162,8 +164,12 @@ const processImageData = (colorValues, dimensions, options) => {
     const t1 = performance.now()
     const performanceInSeconds = (t1 - t0) /1000
 
-    console.log('eta: ', performanceInSeconds);
+    console.log('DONE: ', performanceInSeconds.toFixed(2)+'s');
     console.log(`Image was created at './out/${file}'`);
+}
+
+const getNextCommonDivider = (side, scale) => {
+    return (side%scale === 0) ? side/scale : getNextCommonDivider (side+1, scale)
 }
 
 const getImageData = async (path, options) => {
@@ -207,7 +213,13 @@ const getImageData = async (path, options) => {
             }
         }
 
-        processImageData(colors, { WIDTH_SCALED: canvas_width/scale, HEIGHT_SCALED: canvas_height/scale, RATIO: aspect_ratio }, options)
+        const dimensions = {
+            WIDTH_SCALED: getNextCommonDivider(canvas_width, scale), 
+            HEIGHT_SCALED: getNextCommonDivider(canvas_height, scale), 
+            RATIO: aspect_ratio
+        }
+
+        processImageData(colors, dimensions, options)
 
     } catch (error) {
         console.log(error.message)
