@@ -2196,18 +2196,6 @@
         "id": "photo-1613235498412-e66e345feabd"
     },
     {
-        "count": 186,
-        "dominantColor": [
-            23.34560405812887,
-            -9.260573843284575,
-            13.544911241486146
-        ],
-        "url": "https://images.unsplash.com/photo-1613235498412-e66e345feabd?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8b3JhbmdlfHx8fHx8MTY0NTI3NDk5OQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "/photos/photo186.jpg",
-        "colorCategory": "orange",
-        "id": "photo-1613235498412-e66e345feabd"
-    },
-    {
         "count": 419,
         "dominantColor": [
             23.40220400612393,
@@ -3392,18 +3380,6 @@
         ],
         "url": "https://images.unsplash.com/photo-1531878804488-d8662d51384f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8dHVycXVvaXNlfHx8fHx8MTY0NTI3NjI2MA&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
         "path": "/photos/photo411.jpg",
-        "colorCategory": "turquoise",
-        "id": "photo-1531878804488-d8662d51384f"
-    },
-    {
-        "count": 420,
-        "dominantColor": [
-            38.69198720215661,
-            -12.71791474502218,
-            0.4443765994985527
-        ],
-        "url": "https://images.unsplash.com/photo-1531878804488-d8662d51384f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8dHVycXVvaXNlfHx8fHx8MTY0NTI3NjI3OQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "/photos/photo420.jpg",
         "colorCategory": "turquoise",
         "id": "photo-1531878804488-d8662d51384f"
     },
