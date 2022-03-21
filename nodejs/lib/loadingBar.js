@@ -6,11 +6,11 @@ module.exports = class LoadingBar {
     
     update(index) {
         this.bar[Math.floor((index/this.length)*50)] = '█'
-        return process.stdout.write('|' + this.bar.join('') + '|' + Math.round((index/this.length)*100) + '%\r')
+        process.stdout.write('|' + this.bar.join('') + '|' + Math.round((index/this.length)*100) + '%\r')
     }
 
-    clear() {
-        process.stdout.write('\r')
+    complete() {
+        process.stdout.write('|' + this.bar.join('') + '|\x1b[32m[DONE]\x1b[0m\n\n')
     }
 
 }

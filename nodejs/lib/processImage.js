@@ -19,15 +19,15 @@ const processImageData = (colorValues, dimensions, options) => {
     const t1 = performance.now()
     const performanceInSeconds = (t1 - t0) /1000
 
-    console.log('\x1b[32m[DONE] \x1b[0m', '- Time Elapsed: ', performanceInSeconds.toFixed(2)+'s')
     console.log(`Image was created at '\x1b[33m./out/${file}\x1b[0m'`)
+    console.log('Time Elapsed: ', performanceInSeconds.toFixed(2)+'s')
 }
 
 module.exports = async (path, options) => {
     const scale = parseInt(options.scale)
 
     try {
-        const loaded_image = await loadImage(`${path}`)
+        const loaded_image = await loadImage(path)
         
         const { width, height } = loaded_image
         const aspect_ratio  = Math.max(width, height) / Math.min(width, height)
@@ -36,8 +36,6 @@ module.exports = async (path, options) => {
 
         const canvas = createCanvas(canvas_width, canvas_height)
         const ctx = canvas.getContext('2d')
-
-        // console.log("Canvas Size: ",canvas_width, canvas_height);
 
         ctx.drawImage(loaded_image, 0, 0, canvas_width, canvas_height)
 

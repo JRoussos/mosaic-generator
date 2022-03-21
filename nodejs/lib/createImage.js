@@ -48,6 +48,13 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         matrix.push(count)
         
         const baseImg = utils.getJimpInstance(path, count, CACHED_PHOTOS)
+        if(baseImg.height !== baseImg.width){
+            const sWH = Math.min(baseImg.height, img.naturalWidth)
+            const sy  = baseImg.height > baseImg.width ? baseImg.height/2 - baseImg.width/2 : 0
+            const sx  = baseImg.height < baseImg.width ? baseImg.width/2 - baseImg.height/2 : 0
+
+            baseImg.crop(sx, sy, sWH, sWH)
+        }
         baseImg.resize(THUMBNAIL_IMAGE_SIZE, THUMBNAIL_IMAGE_SIZE)
         emptyNewImage.composite(baseImg, x, y)
 
@@ -66,6 +73,6 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         emptyNewImage.resize(new_width, new_height).write(`./out/${file_name}`)
     }
 
-    Bar.clear()
+    Bar.complete()
     return file_name
 }
