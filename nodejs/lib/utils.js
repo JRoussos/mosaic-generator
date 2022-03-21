@@ -8,7 +8,7 @@ const fs = require('fs')
  * @returns {Number} The result is more likely to be closer to zero, following a quartic curve.
  */
 
-exports.getRandom = (max) => { 
+const getRandom = (max) => { 
     return Math.floor(Math.pow(Math.random(), 4) * max)
 } 
 
@@ -20,7 +20,7 @@ exports.getRandom = (max) => {
  * @returns {Number} The next number that is exactly divided by the scale
  */
 
-exports.getNextCommonDivider = (side, scale) => {
+const getNextCommonDivider = (side, scale) => {
     return (side%scale === 0) ? side/scale : getNextCommonDivider (side+1, scale)
 }
 
@@ -33,7 +33,7 @@ exports.getNextCommonDivider = (side, scale) => {
  * @returns A jimp instance of that image
  */
 
-exports.getJimpInstance = (path, count, CACHED_PHOTOS) => {
+const getJimpInstance = (path, count, CACHED_PHOTOS) => {
     if(CACHED_PHOTOS[count]) {
         return CACHED_PHOTOS[count]
     }else {
@@ -46,3 +46,8 @@ exports.getJimpInstance = (path, count, CACHED_PHOTOS) => {
     }
 }
  
+module.exports = {
+    getRandom: getRandom,
+    getNextCommonDivider: getNextCommonDivider,
+    getJimpInstance: getJimpInstance
+}
