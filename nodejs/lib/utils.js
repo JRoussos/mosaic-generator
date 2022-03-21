@@ -37,7 +37,7 @@ exports.getJimpInstance = (path, count, CACHED_PHOTOS) => {
     if(CACHED_PHOTOS[count]) {
         return CACHED_PHOTOS[count]
     }else {
-        const buffer = fs.readFileSync(path)
+        const buffer = fs.readFileSync(`./assets${path}`)
         const decoded = Jimp.decoders['image/jpeg'](buffer)
         const baseImg = new Jimp(decoded)
 
