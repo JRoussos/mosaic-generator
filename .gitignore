@@ -37,3 +37,6 @@ nodejs/assets/photos/
 nodejs/node_modules
 nodejs/out
 nodejs/*.jpg
+
+nodejs/assets/dirs.py
+nodejs/assets/photos-bak.json

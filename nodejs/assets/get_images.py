@@ -34,63 +34,65 @@ def rgb2lab (rgb) :
     if value > 0.008856 :
       value = value ** ( 1.0/3.0 )
     else :
-      value = ( 7.787 * value ) + ( 16 / 116 )
+      value = ( 7.787 * value ) + ( 16.0 / 116.0 )
 
     XYZ[idx] = value
 
   Lab = [0, 0, 0]
 
-  Lab [ 0 ] = ( 116 * XYZ[ 1 ] ) - 16
-  Lab [ 1 ] = 500 * ( XYZ[ 0 ] - XYZ[ 1 ] )
-  Lab [ 2 ] = 200 * ( XYZ[ 1 ] - XYZ[ 2 ] )
+  Lab [ 0 ] = ( 116.0 * XYZ[ 1 ] ) - 16.0
+  Lab [ 1 ] = 500.0 * ( XYZ[ 0 ] - XYZ[ 1 ] )
+  Lab [ 2 ] = 200.0 * ( XYZ[ 1 ] - XYZ[ 2 ] )
 
   return Lab
 
-outfile = open("photos.json", 'w')
-list = []
+def main () :
+  outfile = open("photos2.json", 'w')
+  list = []
 
-# colorList = ['red', 'orange', 'yellow', 'green', 'turquoise', 'blue', 'violet', 'pink', 'brown', 'black', 'gray', 'white']
-colorList = ['red']
-count = 0
+  colorList = ['red', 'orange', 'yellow', 'green', 'turquoise', 'blue', 'violet', 'pink', 'brown', 'black', 'gray', 'white']
+  count = 0
 
-isExist = os.path.exists('./photos')
-if not isExist:
-  os.makedirs('./photos')
+  isExist  = os.path.exists('./photos')
+  if not isExist:
+    os.makedirs('./photos')
 
-for color in range(len(colorList)): # get 200 photos
-  for i in range(100):
-    randomNumber = random.randint(0, i)
-    count += 1
+  for color in range(len(colorList)): 
+    for i in range(100): 
+      randomNumber = random.randint(0, i)
+      count += 1
 
-    res = requests.get('https://source.unsplash.com/random/200x200?sig=' + str(randomNumber) + '&' +colorList[color])
+      res = requests.get('https://source.unsplash.com/random/200x200?sig=' + str(randomNumber) + '&' +colorList[color])
 
-    file = open("./photos/photo"+str(count)+".jpg", "wb")
-    file.write(res.content)
-    file.close()
+      file = open("./photos/photo"+str(count)+".jpg", "wb")
+      file.write(res.content)
+      file.close()
 
-    ixid = urlparse.urlparse(res.url).path
-    # ixid = urlparse.parse_qs(parsed.query)['ixid'][0]
+      ixid = urlparse.urlparse(res.url).path
+      # ixid = urlparse.parse_qs(parsed.query)['ixid'][0]
 
-    print(ixid + " [DONE]") 
+      print(ixid + ' \t[DONE]') 
 
-    color_thief = ColorThief("./photos/photo"+str(count)+".jpg")
-    dominant_color = color_thief.get_color(quality=1)
+      color_thief = ColorThief("./photos/photo"+str(count)+".jpg")
+      dominant_color = color_thief.get_color(quality=1)
 
-    photo = {
-        "id": ixid[1:],
-        "count": count,
-        "url": res.url,
-        "path": "/photos/photo"+str(count)+".jpg",
-        "dominantColor": rgb2lab(dominant_color),
-        "colorCategory": colorList[color]
-    }
+      photo = {
+          "id": ixid[1:],
+          "count": count,
+          "url": res.url,
+          "path": "./assets/photos/photo"+str(count)+".jpg",
+          "dominantColor": rgb2lab(dominant_color),
+          "colorCategory": colorList[color]
+      }
 
-    list.append(photo)
+      list.append(photo)
 
-  raw_input("Color: '" + colorList[color] + "' finished. Press enter to continue...")
-    
-json.dump(list, outfile)
+    raw_input("Color: '" + colorList[color] + "' finished. Press enter to continue...")
+      
+  json.dump(list, outfile)
 
+if __name__ == '__main__':
+  main()
 
 # Output example:
 

@@ -66,6 +66,6 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         emptyNewImage.resize(new_width, new_height).write(`./out/${file_name}`)
     }
 
-    Bar.clear()
+    Bar.complete()
     return file_name
 }
