@@ -58,6 +58,8 @@ Then `npm install` and `npm start` at the root and the server folder et voilà!
 
 1. Right now the input image and as a result the output mosaic is limited to a square aspect ratio. Images with different ratio will default to a center crop. I would like to keep the maintain the ratio of the input image.
 
+    > This issue has been resolved on the CLI version. Working on implementing it to the front-end too.
+
 2. I would also like to have a way to inform the client about the estimated time for the mosaic to be done. I tried to use websockets to send back some kind of indication but it didn't work. My next thought was to keep a log file at the server side and keep track of the average times so that the client will have some vague idea about the eta.
 
 3. Another good idea would be to change the python script so that it can fetch specific images like generate a mosaic only from pictures of animals, or from photos you already have on storage.
