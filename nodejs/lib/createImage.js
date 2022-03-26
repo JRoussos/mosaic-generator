@@ -32,18 +32,21 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         const images_with_lowest_delta = sortedDistances[i]
         let indx  = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
 
-        for(let k = 1; k < Math.floor((duplicate * duplicate) /2); k++) {
-            let looping = true
+        let shouldChange = false
+        while(true) {
+            for(let k = 1; k < Math.floor((duplicate * duplicate) /2); k++) {
+                let dx = k%DUPLICATE_DEPTH_CHECK
+                let dy = Math.floor(k/DUPLICATE_DEPTH_CHECK)
 
-            let dx = k%DUPLICATE_DEPTH_CHECK
-            let dy = Math.floor(k/DUPLICATE_DEPTH_CHECK)
-            while(looping) {
                 let prevColumnCheck = matrix[i - dy] === images_with_lowest_delta[indx].count
                 let prevRowCheck    = matrix[i - (OG_IMAGE_SIZE.w * dy) - dx] === images_with_lowest_delta[indx].count
 
-                if(prevColumnCheck || prevRowCheck) indx = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
-                else looping = false
+                shouldChange = (prevColumnCheck || prevRowCheck) ? true : false
+                if(shouldChange) break
             }
+
+            if(shouldChange) indx = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
+            else break
         }
         
         const { path, count } = images_with_lowest_delta[indx]
