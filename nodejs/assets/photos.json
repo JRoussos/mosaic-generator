@@ -6360,18 +6360,6 @@
         "id": "photo-1587749158407-58ef2b89ccf8"
     },
     {
-        "count": 1073,
-        "dominantColor": [
-            65.60685107544766,
-            -1.033797332977704,
-            -1.5454991922385863
-        ],
-        "url": "https://images.unsplash.com/photo-1587749158407-58ef2b89ccf8?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8Z3JheXx8fHx8fDE2NDUyNzgwNzc&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=200",
-        "path": "./assets/photos/photo1073.jpg",
-        "colorCategory": "gray",
-        "id": "photo-1587749158407-58ef2b89ccf8"
-    },
-    {
         "count": 849,
         "dominantColor": [
             65.65186496747243,

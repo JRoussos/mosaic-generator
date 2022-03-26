@@ -5,11 +5,11 @@ const LoadingBar = require('./loadingBar')
 module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimensions, options) => {
     const { HEIGHT_SCALED, WIDTH_SCALED, RATIO } = dimensions
     const CACHED_PHOTOS = new Array(JSON_DATA_LENGTH)
-    const SIMILARITY_ARRAY_LENGTH = 30
+    const SIMILARITY_ARRAY_LENGTH = 20
 
     let {final, thumbs, duplicate} = options
     const THUMBNAIL_IMAGE_SIZE = parseInt(thumbs)
-    const DUPLICATE_DEPTH_CHECK = parseInt(duplicate)
+    const DUPLICATE_DEPTH_CHECK = parseInt(duplicate) % 2 === 0 ? parseInt(duplicate) : parseInt(duplicate) -1
     
     const OG_IMAGE_SIZE = {
         w: COLOR_VALUES_LENGHT / HEIGHT_SCALED,
@@ -30,16 +30,18 @@ module.exports = (COLOR_VALUES_LENGHT, JSON_DATA_LENGTH, sortedDistances, dimens
         let y = Math.floor(i/OG_IMAGE_SIZE.w) * THUMBNAIL_IMAGE_SIZE 
 
         const images_with_lowest_delta = sortedDistances[i]
-        let indx = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
+        let indx  = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
 
-        for(let k = 0; k < DUPLICATE_DEPTH_CHECK; k++) {
+        for(let k = 1; k < Math.floor((duplicate * duplicate) /2); k++) {
             let looping = true
+
+            let dx = k%DUPLICATE_DEPTH_CHECK
+            let dy = Math.floor(k/DUPLICATE_DEPTH_CHECK)
             while(looping) {
-                let prevColumnCheck = matrix[i - k] === images_with_lowest_delta[indx].count
-                let prevRowLCheck   = matrix[(i - OG_IMAGE_SIZE.w) - k] === images_with_lowest_delta[indx].count
-                let prevRowRCheck   = matrix[(i - OG_IMAGE_SIZE.w) + k] === images_with_lowest_delta[indx].count
-                
-                if(prevColumnCheck || prevRowLCheck || prevRowRCheck) indx = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
+                let prevColumnCheck = matrix[i - dy] === images_with_lowest_delta[indx].count
+                let prevRowCheck    = matrix[i - (OG_IMAGE_SIZE.w * dy) - dx] === images_with_lowest_delta[indx].count
+
+                if(prevColumnCheck || prevRowCheck) indx = utils.getRandom(SIMILARITY_ARRAY_LENGTH)
                 else looping = false
             }
         }
